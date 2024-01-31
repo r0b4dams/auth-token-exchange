@@ -1,0 +1,163 @@
+{
+  "variables": {
+    "apiKey": "3b21a442-752c-4ca5-abdc-1ae4b2ec876c",
+    "defaultTenantId": "d7492085-76f7-4f19-8660-d34d3ff80fb7",
+    "applicationId": "6e4e9805-9690-476f-a7d8-2552992c41e1",
+    "asymmetricKeyId": "#{UUID()}",
+    "newThemeId": "#{UUID()}",
+    "adminEmail": "admin@test.com",
+    "testPassword": "password",
+    "rob_id": "00000000-0000-0000-0000-000000000001"
+  },
+  "apiKeys": [
+    {
+      "key": "#{apiKey}",
+      "description": "Unrestricted API key"
+    }
+  ],
+  "requests": [
+    {
+      "method": "POST",
+      "url": "/api/key/generate/#{asymmetricKeyId}",
+      "tenantId": "#{defaultTenantId}",
+      "body": {
+        "key": {
+          "algorithm": "RS256",
+          "name": "For App",
+          "length": 2048
+        }
+      }
+    },
+    {
+      "method": "PATCH",
+      "url": "/api/system-configuration",
+      "body": {
+        "systemConfiguration": {
+          "corsConfiguration": {
+            "allowCredentials": true,
+            "allowedMethods": ["GET", "POST", "OPTIONS"],
+            "allowedOrigins": ["http://localhost:3000"],
+            "debug": false,
+            "enabled": true,
+            "preflightMaxAgeInSeconds": 0
+          }
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/api/user/registration",
+      "body": {
+        "user": {
+          "email": "#{adminEmail}",
+          "password": "#{testPassword}"
+        },
+        "registration": {
+          "applicationId": "#{FUSIONAUTH_APPLICATION_ID}",
+          "roles": ["admin"]
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/api/application/#{applicationId}",
+      "tenantId": "#{defaultTenantId}",
+      "body": {
+        "application": {
+          "name": "App",
+          "oauthConfiguration": {
+            "clientSecret": "ZyYv1MrS4XjCZKMu0YShVXsGbXoHw57pkXNBcSukY48",
+            "authorizedRedirectURLs": [
+              "http://localhost:3000",
+              "http://localhost:9000/auth/callback"
+            ],
+            "authorizedOriginURLs": [
+              "http://localhost:3000",
+              "http://localhost:9000"
+            ],
+            "logoutURL": "http://localhost:3000",
+            "enabledGrants": ["authorization_code", "refresh_token"],
+            "debug": true,
+            "generateRefreshTokens": true
+          },
+          "jwtConfiguration": {
+            "enabled": true,
+            "accessTokenKeyId": "#{asymmetricKeyId}",
+            "idTokenKeyId": "#{asymmetricKeyId}"
+          },
+          "registrationConfiguration": {
+            "enabled": true,
+            "confirmPassword": true,
+            "firstName": {
+              "enabled": true,
+              "required": true
+            },
+            "lastName": {
+              "enabled": true,
+              "required": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/api/user/registration/#{rob_id}",
+      "body": {
+        "user": {
+          "email": "rob@test.com",
+          "password": "#{testPassword}",
+          "firstName": "Robert",
+          "lastName": "Adams",
+          "imageUrl": "https://avatars.githubusercontent.com/u/80424647"
+        },
+        "registration": {
+          "applicationId": "#{applicationId}"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/api/theme/#{newThemeId}",
+      "body": {
+        "sourceThemeId": "75a068fd-e94b-451a-9aeb-3ddb9a3b5987",
+        "theme": {
+          "name": "AppTheme"
+        }
+      }
+    },
+    {
+      "method": "PATCH",
+      "url": "/api/theme/#{newThemeId}",
+      "body": {
+        "theme": {
+          "stylesheet": "@{css/styles.css}"
+        }
+      }
+    },
+    {
+      "method": "PATCH",
+      "url": "/api/tenant/#{defaultTenantId}",
+      "body": {
+        "tenant": {
+          "themeId": "#{newThemeId}"
+        }
+      }
+    },
+    {
+      "method": "PATCH",
+      "url": "/api/tenant/#{defaultTenantId}",
+      "body": {
+        "tenant": {
+          "emailConfiguration": {
+            "host": "mailcatcher",
+            "port": 1025,
+            "defaultFromName": "FusionAuth",
+            "defaultFromEmail": "no-reply@fusionauth.io",
+            "debug": true
+          }
+        }
+      }
+    }
+  ]
+}
