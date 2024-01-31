@@ -1,6 +1,6 @@
 .PHONY: setup dev add save clean
 
-setup: clean
+install: clean
 	test -f requirements.txt || touch requirements.txt
 	python3 -m venv .venv
 	.venv/bin/pip install -r requirements.txt
