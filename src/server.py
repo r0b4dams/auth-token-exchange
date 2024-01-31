@@ -29,7 +29,7 @@ class Server(BaseApplication):
             if key in self.cfg.settings and value is not None
         }
 
-        # set properties on BaseApplication
+        # set config on BaseApplication
         for key, value in gunicorn_config.items():
             self.cfg.set(key.lower(), value)
 
