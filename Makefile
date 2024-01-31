@@ -8,6 +8,9 @@ setup: clean
 dev: .venv
 	@.venv/bin/python3 src/main.py
 
+preview: .venv
+	@export MODE=production && .venv/bin/python3 src/main.py
+
 add: .venv
 	@.venv/bin/pip install $(pkg)
 	@$(MAKE) save
