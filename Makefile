@@ -5,7 +5,7 @@ setup: clean
 	python3 -m venv .venv
 	.venv/bin/pip install -r requirements.txt
 
-dev: .venv/bin/python3
+dev: .venv
 	@.venv/bin/python3 src/main.py
 
 add: .venv
