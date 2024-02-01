@@ -1,5 +1,4 @@
 import os
-import multiprocessing
 
 mode = os.environ.get("MODE", "development")
 host = os.environ.get("HOST", "localhost")
@@ -15,10 +14,9 @@ FUSIONAUTH_CLIENT_SECRET = os.environ.get(
     "FUSIONAUTH_CLIENT_SECRET", "ZyYv1MrS4XjCZKMu0YShVXsGbXoHw57pkXNBcSukY48"
 )
 
-
+# https://docs.gunicorn.org/en/latest/design.html#how-many-workers
 def number_of_workers():
-    return multiprocessing.cpu_count()
-
+    return 4
 
 config = {
     "mode": mode,
