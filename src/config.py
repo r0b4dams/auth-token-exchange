@@ -14,9 +14,11 @@ FUSIONAUTH_CLIENT_SECRET = os.environ.get(
     "FUSIONAUTH_CLIENT_SECRET", "ZyYv1MrS4XjCZKMu0YShVXsGbXoHw57pkXNBcSukY48"
 )
 
-# https://docs.gunicorn.org/en/latest/design.html#how-many-workers
+
 def number_of_workers():
+    # https://docs.gunicorn.org/en/latest/design.html#how-many-workers
     return 4
+
 
 config = {
     "mode": mode,
