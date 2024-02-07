@@ -1,29 +1,40 @@
-.PHONY: setup dev add save clean fusionauth
+.PHONY: setup dev add save clean fusionauth-up fusionauth-down
+
+VENV := .venv
+PY := $(VENV)/bin/python3
+PIP := $(VENV)/bin/pip
+ENTRYPOINT := src
+REQ_FILE := requirements.txt
+
 
 install: clean
-	test -f requirements.txt || touch requirements.txt
-	python3 -m venv .venv
-	.venv/bin/pip install -r requirements.txt
+	@python3 -m venv $(VENV)
+	@test -f $(REQ_FILE) || (touch $(REQ_FILE) && echo "# Install requirements with 'make add pkg=<PKG_NAME>'" > $(REQ_FILE))
+	@$(PIP) install -r $(REQ_FILE)
 
 dev: .venv
-	@.venv/bin/python3 src
+	@$(PY) $(ENTRYPOINT)
 
 preview: .venv
-	@export MODE=production && .venv/bin/python3 src
+	@export MODE=production && $(PY) $(ENTRYPOINT)
 
 add: .venv
-	@.venv/bin/pip install $(pkg)
+	@$(PIP) install $(pkg)
+	@$(MAKE) save
+
+rm: .venv
+	@$(PIP) uninstall $(pkg)
 	@$(MAKE) save
 
 save: .venv
-	@.venv/bin/pip freeze > requirements.txt
+	@$(PIP) freeze > $(REQ_FILE)
 
 clean:
-	@rm -rf .venv
+	@rm -rf $(VENV)
 	@find . -type f -name "*.pyc" -delete
 
 fusionauth-up:
 	@docker compose --env-file compose.env up
 
 fusionauth-down:
-	@docker compose down -v
+	@docker compose --env-file compose.env down -v
