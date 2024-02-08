@@ -1,15 +1,18 @@
 from flask import Blueprint, Flask
+from flask_cors import CORS
 from gunicorn.app.base import BaseApplication
 
 
 class Server(BaseApplication):
     def __init__(self, config: dict[str, str] = {}, blueprints: list[Blueprint] = []):
         self.app = Flask(__name__)
+        CORS(self.app, supports_credentials=True)
         self.config = config
         self.register_blueprints(blueprints)
         super().__init__()
 
     def listen(self):
+
         if self.config['mode'] == 'production':
             self.run()
         else:
