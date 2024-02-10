@@ -9,7 +9,7 @@ def encode(string: str) -> str:
     return b64_bytes.decode(ENCODING)
 
 
-def decode(string: str):
+def decode(string: str) -> str:
     b64_bytes = string.encode(ENCODING)
     str_bytes = b64decode(b64_bytes)
     return str_bytes.decode(ENCODING)

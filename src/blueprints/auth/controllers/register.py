@@ -8,8 +8,7 @@ from config import FUSIONAUTH_BASE_URL
 def handle_register():
     new_state = state.push_redirect_url(
         request.args.get("redirect_uri"),
-        request.args.get("state")
-    )
+        request.args.get("state"))
 
     code_verifier, code_challenge = generate_pkce_pair()
 
@@ -23,8 +22,7 @@ def handle_register():
         "state": new_state,
         "redirect_uri": redirect_uri,
         "code_challenge": code_challenge,
-        "code_challenge_method": "S256"
-    })
+        "code_challenge_method": "S256"})
 
     redirect_url = "".join(
         [FUSIONAUTH_BASE_URL, "/oauth2/register", "?", query])

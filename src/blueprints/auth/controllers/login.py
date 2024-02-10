@@ -28,6 +28,7 @@ def handle_login():
         [FUSIONAUTH_BASE_URL, "/oauth2/authorize", "?", query])
 
     response = redirect(redirect_url, code=302)
+
     response.set_cookie("code_verifier", code_verifier,
                         secure=True,  httponly=True, samesite="lax")
 

@@ -13,7 +13,7 @@ def handle_callback():
     redirect_uri = "".join(
         [request.scheme, "://", request.host, "/auth/callback"])
 
-    data = post(
+    response = post(
         url="".join([FUSIONAUTH_BASE_URL, "/oauth2/token"]),
         headers={
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -24,9 +24,9 @@ def handle_callback():
             "code_verifier": code_verifier,
             "redirect_uri": redirect_uri,
             "client_id": FUSIONAUTH_CLIENT_ID,
-            "client_secret": FUSIONAUTH_CLIENT_SECRET,
-        })
-    ).json()
+            "client_secret": FUSIONAUTH_CLIENT_SECRET}))
+
+    data = response.json()
 
     access_token = data["access_token"]
     refresh_token = data["refresh_token"]

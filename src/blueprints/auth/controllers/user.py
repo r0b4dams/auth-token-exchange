@@ -12,7 +12,10 @@ def handle_user():
         return response
 
     url = "".join([FUSIONAUTH_BASE_URL, "/oauth2/userinfo"])
-    data = get(url, headers={
-        "Authorization": "Bearer %s" % access_token
-    }).json()
+
+    response = get(url, headers={
+        "Authorization": "Bearer %s" % access_token})
+
+    data = response.json()
+
     return jsonify(data)

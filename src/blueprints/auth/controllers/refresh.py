@@ -11,7 +11,7 @@ def handle_refresh():
     if not refresh_token:
         raise Exception("no refresh token found")
 
-    data = post(
+    response = post(
         url="".join([FUSIONAUTH_BASE_URL, "/oauth2/token"]),
         headers={
             "Content-Type": "application/x-www-form-urlencoded",
@@ -21,9 +21,9 @@ def handle_refresh():
             "refresh_token": request.cookies.get("app.rt"),
             "access_token": request.cookies.get("app.at"),
             "client_id": FUSIONAUTH_CLIENT_ID,
-            "client_secret": FUSIONAUTH_CLIENT_SECRET,
-        })
-    ).json()
+            "client_secret": FUSIONAUTH_CLIENT_SECRET}))
+
+    data = response.json()
 
     access_token = data["access_token"]
     refresh_token = data["refresh_token"]
