@@ -26,8 +26,7 @@ class Server(BaseApplication):
             self.app.run(
                 debug=True,
                 host=self.config['host'],
-                port=self.config['port']
-            )
+                port=self.config['port'])
 
     def load(self):
         """
@@ -39,12 +38,11 @@ class Server(BaseApplication):
         """
         filter valid Gunicorn properties and set config on BaseApplication
         """
-        gunicorn_config = {
-            key: value for key, value in self.config.items()
-            if key in self.cfg.settings and value is not None
-        }
+        gunicorn_config = {key.lower(): value for key, value in self.config.items()
+                           if key in self.cfg.settings and value is not None}
+
         for key, value in gunicorn_config.items():
-            self.cfg.set(key.lower(), value)
+            self.cfg.set(key, value)
 
     def register_blueprints(self, blueprints: list[Blueprint]):
         """
