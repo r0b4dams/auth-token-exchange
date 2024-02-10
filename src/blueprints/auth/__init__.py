@@ -1,5 +1,5 @@
 from flask import Blueprint
-from blueprints.auth.controllers import *
+from .controllers import *
 
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 
