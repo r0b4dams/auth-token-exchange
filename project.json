@@ -5,9 +5,10 @@
   "description": "a new project",
   "scripts": {
     "preview": "export MODE=production && pyrob run",
-    "docker:up:all": "docker compose --file .docker/compose.yaml --env-file .docker/compose.env up",
-    "docker:up:fa": "docker compose --file .docker/compose.yaml --env-file .docker/compose.env up",
-    "docker:down": "docker compose--env-file .docker/compose.env down -v"
+    "docker:up:app": "echo app",
+    "docker:up:fa": "docker compose --env-file compose.env up",
+    "docker:up:all": "docker compose --env-file compose.env up",
+    "docker:down": "docker compose --env-file compose.env down -v"
   },
   "requirements": {
     "blinker": "1.7.0",
