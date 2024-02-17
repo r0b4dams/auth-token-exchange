@@ -1,3 +1,5 @@
+"""controllers.auth.refresh"""
+
 from urllib.parse import urlencode
 from time import time
 from flask import request, make_response
@@ -16,12 +18,17 @@ def handle_refresh():
         headers={
             "Content-Type": "application/x-www-form-urlencoded",
         },
-        data=urlencode({
-            "grant_type": "refresh_token",
-            "refresh_token": request.cookies.get("app.rt"),
-            "access_token": request.cookies.get("app.at"),
-            "client_id": FUSIONAUTH_CLIENT_ID,
-            "client_secret": FUSIONAUTH_CLIENT_SECRET}))
+        data=urlencode(
+            {
+                "grant_type": "refresh_token",
+                "refresh_token": request.cookies.get("app.rt"),
+                "access_token": request.cookies.get("app.at"),
+                "client_id": FUSIONAUTH_CLIENT_ID,
+                "client_secret": FUSIONAUTH_CLIENT_SECRET,
+            }
+        ),
+        timeout=10,
+    )
 
     data = response.json()
 
@@ -39,16 +46,25 @@ def handle_refresh():
     # set token expiration in a readable cookie
     time_ms = int(time() * 1000)
     expires_in_ms = int(expires_in * 1000)
-    response.set_cookie("app.at_exp", str(time_ms + expires_in_ms),
-                        httponly=False, secure=True, samesite='lax', max_age=expires_in_ms)
+    response.set_cookie(
+        "app.at_exp",
+        str(time_ms + expires_in_ms),
+        httponly=False,
+        secure=True,
+        samesite="lax",
+        max_age=expires_in_ms,
+    )
 
     # save tokens
-    response.set_cookie("app.at", access_token,
-                        httponly=True, secure=True, samesite='lax')
-    response.set_cookie("app.rt", refresh_token,
-                        httponly=True, secure=True, samesite='lax')
-    response.set_cookie("app.idt", id_token,
-                        httponly=False, secure=True, samesite='lax')
+    response.set_cookie(
+        "app.at", access_token, httponly=True, secure=True, samesite="lax"
+    )
+    response.set_cookie(
+        "app.rt", refresh_token, httponly=True, secure=True, samesite="lax"
+    )
+    response.set_cookie(
+        "app.idt", id_token, httponly=False, secure=True, samesite="lax"
+    )
 
     # cleanup
     response.delete_cookie("code_verifier")
