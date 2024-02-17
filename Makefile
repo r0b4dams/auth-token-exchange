@@ -3,7 +3,7 @@
 VENV := .venv
 PY := $(VENV)/bin/python3
 PIP := $(VENV)/bin/pip
-ENTRYPOINT := src
+ENTRYPOINT := src/main.py
 REQ_FILE := requirements.txt
 
 
