@@ -1,13 +1,12 @@
-"""controllers.auth.login"""
-
 from urllib.parse import urlencode
 from flask import request, redirect
 from pkce import generate_pkce_pair
+
 from utils import state
 from config import FUSIONAUTH_BASE_URL
 
 
-def handle_login():
+def handle_register():
     new_state = state.push_redirect_url(
         request.args.get("redirect_uri"), request.args.get("state")
     )
@@ -28,7 +27,7 @@ def handle_login():
         }
     )
 
-    redirect_url = "".join([FUSIONAUTH_BASE_URL, "/oauth2/authorize", "?", query])
+    redirect_url = "".join([FUSIONAUTH_BASE_URL, "/oauth2/register", "?", query])
 
     response = redirect(redirect_url, code=302)
 

@@ -1,18 +1,16 @@
-"""controllers.auth.callback"""
-
-from time import time
 from urllib.parse import urlencode
-from flask import request, redirect
+from time import time
+from flask import request, make_response
 from requests import post
-from utils import state
+
 from config import FUSIONAUTH_BASE_URL, FUSIONAUTH_CLIENT_ID, FUSIONAUTH_CLIENT_SECRET
 
 
-def handle_callback():
-    code = request.args.get("code")
-    code_verifier = request.cookies.get("code_verifier")
+def handle_refresh():
+    refresh_token = request.cookies.get("app.rt")
 
-    redirect_uri = "".join([request.scheme, "://", request.host, "/auth/callback"])
+    if not refresh_token:
+        raise Exception("no refresh token found")
 
     response = post(
         url="".join([FUSIONAUTH_BASE_URL, "/oauth2/token"]),
@@ -21,10 +19,9 @@ def handle_callback():
         },
         data=urlencode(
             {
-                "grant_type": "authorization_code",
-                "code": code,
-                "code_verifier": code_verifier,
-                "redirect_uri": redirect_uri,
+                "grant_type": "refresh_token",
+                "refresh_token": request.cookies.get("app.rt"),
+                "access_token": request.cookies.get("app.at"),
                 "client_id": FUSIONAUTH_CLIENT_ID,
                 "client_secret": FUSIONAUTH_CLIENT_SECRET,
             }
@@ -42,8 +39,8 @@ def handle_callback():
     if not access_token or not refresh_token:
         raise Exception("access token or refresh token missing")
 
-    redirect_url = state.generate_redirect_url(request)
-    response = redirect(redirect_url)
+    response = make_response()
+    response.status_code = 204
 
     # set token expiration in a readable cookie
     time_ms = int(time() * 1000)

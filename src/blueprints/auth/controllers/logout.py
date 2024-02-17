@@ -1,7 +1,6 @@
-"""controllers.auth.logout"""
-
 from urllib.parse import urlencode
 from flask import request, redirect
+
 from config import FUSIONAUTH_BASE_URL
 
 

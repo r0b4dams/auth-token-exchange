@@ -1,7 +1,6 @@
-"""controllers.auth.user"""
-
 from flask import request, jsonify
 from requests import get
+
 from config import FUSIONAUTH_BASE_URL
 
 
