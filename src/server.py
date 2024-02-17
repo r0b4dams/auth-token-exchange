@@ -17,9 +17,6 @@ class Server(BaseApplication):
         CORS(self.app, supports_credentials=True)
         super().__init__()
 
-    def init(self, *_):
-        pass
-
     def listen(self):
         """
         start the server and run forever
