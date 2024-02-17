@@ -1,16 +1,21 @@
+"""utils.state"""
+
 from urllib.parse import urlencode
 from flask import Request
-from utils.b64 import encode, decode
+from .b64 import encode, decode
 
 
 def generate_redirect_url(req: Request) -> str:
     encoded_uri, state, *_ = req.args.get("state").split(":")
     redirect_uri = decode(encoded_uri)
 
-    query = urlencode({
-        "state": state,
-        "user_state": req.args.get("state"),
-        "locale": req.args.get("state")})
+    query = urlencode(
+        {
+            "state": state,
+            "user_state": req.args.get("state"),
+            "locale": req.args.get("state"),
+        }
+    )
 
     return "".join([redirect_uri, "?", query])
 
