@@ -4,10 +4,8 @@
   "author": "bob",
   "description": "a new project",
   "scripts": {
-    "preview": "export MODE=production && pyrob run",
-    "docker:up:app": "echo app",
-    "docker:up:fa": "docker compose --env-file compose.env up",
-    "docker:up:all": "docker compose --env-file compose.env up",
+    "wsgi": "export MODE=production && pyrob run",
+    "docker:up": "docker compose --env-file compose.env up",
     "docker:down": "docker compose --env-file compose.env down -v"
   },
   "requirements": {
