@@ -1,4 +1,4 @@
-name: fusionauth-stack
+name: auth-stack
 version: "3"
 
 services:
