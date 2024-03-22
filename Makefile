@@ -1,40 +1,46 @@
-.PHONY: setup dev add save clean fusionauth-up fusionauth-down
+.PHONY: dev venv lint format typecheck test version clean release
+
+APP_NAME := token_exchange
+VERSION := $(shell python3 -c "from src import $(APP_NAME); print($(APP_NAME).__version__)")
 
 VENV := .venv
 PY := $(VENV)/bin/python3
-PIP := $(VENV)/bin/pip
-ENTRYPOINT := src/main.py
-REQ_FILE := requirements.txt
+PIP := $(PY) -m pip
 
+all: venv
+	@echo "$(APP_NAME) $(VERSION)"
+	@echo "$(VENV) created. Run the following command to activate:"
+	@echo "source $(VENV)/bin/activate" 
 
-install: clean
+venv:
 	@python3 -m venv $(VENV)
-	@test -f $(REQ_FILE) || (touch $(REQ_FILE) && echo "# Install requirements with 'make add pkg=<PKG_NAME>'" > $(REQ_FILE))
-	@$(PIP) install -r $(REQ_FILE)
+	@$(PIP) install --upgrade pip build black mypy pylint pytest pytest-mock
+	@chmod +x $(VENV)/bin/activate
 
 dev: .venv
-	@$(PY) $(ENTRYPOINT)
+	@$(PY) src/token_exchange/main.py
 
-preview: .venv
-	@export MODE=production && $(PY) $(ENTRYPOINT)
+wsgi: .venv
+	@export MODE=production && $(PY) src/token_exchange/main.py
 
-add: .venv
-	@$(PIP) install $(pkg)
-	@$(MAKE) save
+lint: .venv
+	@$(PY) -m pylint src
 
-rm: .venv
-	@$(PIP) uninstall $(pkg)
-	@$(MAKE) save
+format: .venv
+	@$(PY) -m black src
 
-save: .venv
-	@$(PIP) freeze > $(REQ_FILE)
+typecheck: .venv
+	@$(PY) -m mypy src
+
+test: .venv
+	@$(PY) -m pytest tests -v
 
 clean:
-	@rm -rf $(VENV)
-	@find . -type f -name "*.pyc" -delete
-
-fusionauth-up:
-	@docker compose --env-file compose.env up
-
-fusionauth-down:
-	@docker compose --env-file compose.env down -v
+	@find . \
+	\( -name .venv \
+	-o -name dist \
+	-o -name __pycache__ \
+	-o -name "*.mypy_cache" \
+	-o -name "*.pytest_cache" \
+	-o -name "*.egg-info" \
+	\) -exec rm -rf {} +
