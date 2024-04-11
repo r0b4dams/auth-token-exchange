@@ -1,0 +1,28 @@
+"""
+TODO: doc str
+"""
+
+import os
+
+mode = os.environ.get("MODE", "development")
+host = os.environ.get("HOST", "localhost")
+port = os.environ.get("PORT", "9000")
+workers = os.environ.get("NUM_WORKERS", "4")
+
+FUSIONAUTH_BASE_URL = os.environ.get("FUSIONAUTH_BASE_URL", "http://localhost:9011")
+
+FUSIONAUTH_CLIENT_ID = os.environ.get(
+    "FUSIONAUTH_CLIENT_ID", "6e4e9805-9690-476f-a7d8-2552992c41e1"
+)
+FUSIONAUTH_CLIENT_SECRET = os.environ.get(
+    "FUSIONAUTH_CLIENT_SECRET", "ZyYv1MrS4XjCZKMu0YShVXsGbXoHw57pkXNBcSukY48"
+)
+
+
+config = {
+    "mode": mode,
+    "host": host,
+    "port": port,
+    "bind": f"{host}:{port}",
+    "workers": workers,  # https://docs.gunicorn.org/en/latest/design.html#how-many-workers
+}
