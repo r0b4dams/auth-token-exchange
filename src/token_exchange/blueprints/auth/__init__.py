@@ -1,4 +1,3 @@
-# pylint: disable=C0116
 """
 TODO: doc str
 """
