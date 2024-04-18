@@ -27,7 +27,7 @@ save: .venv
 dev: .venv
 	@$(PY) src/token_exchange/main.py
 
-.PHONY: wwgi
+.PHONY: wsgi
 wsgi: .venv
 	@export MODE=production && $(PY) src/token_exchange/main.py
 
@@ -57,3 +57,7 @@ clean:
 	-o -name "*.pytest_cache" \
 	-o -name "*.egg-info" \
 	\) -exec rm -rf {} +
+
+.PHONY: client
+client:
+	@cd client && yarn && yarn dev
