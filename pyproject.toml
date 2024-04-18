@@ -1,0 +1,19 @@
+[project]
+dependencies = [
+  "flask",
+  "flask-cors",
+  "gunicorn",
+  "requests",
+]
+description = "A server to perform the OAuth token exchange with FusionAuth."
+dynamic = ["version"]
+name = "token-exchange"
+readme = "README.md"
+requires-python = ">=3.8"
+
+[build-system]
+build-backend = "flit_core.buildapi"
+requires = ["flit_core<4"]
+
+[tool.setuptools.dynamic]
+version = {attr = "token_exchange.__version__"}
