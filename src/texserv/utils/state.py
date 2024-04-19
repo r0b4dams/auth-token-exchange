@@ -4,7 +4,7 @@ TODO: doc str
 
 from urllib.parse import urlencode
 from flask import Request
-from utils import b64
+from texserv.utils import b64
 
 
 def generate_redirect_url(req: Request) -> str:

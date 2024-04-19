@@ -4,7 +4,7 @@ TODO: doc str
 
 from flask import request, jsonify
 from requests import get
-from config import FUSIONAUTH_BASE_URL
+from texserv.config import FUSIONAUTH_BASE_URL
 
 
 def handle_user():

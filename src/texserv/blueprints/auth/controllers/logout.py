@@ -4,7 +4,7 @@ TODO: doc str
 
 from urllib.parse import urlencode
 from flask import request, redirect
-from config import FUSIONAUTH_BASE_URL
+from texserv.config import FUSIONAUTH_BASE_URL
 
 
 def handle_logout():

@@ -6,7 +6,7 @@ from urllib.parse import urlencode
 from time import time
 from flask import request, make_response
 from requests import post
-from config import (
+from texserv.config import (
     FUSIONAUTH_BASE_URL,
     FUSIONAUTH_CLIENT_ID,
     FUSIONAUTH_CLIENT_SECRET,

@@ -5,11 +5,11 @@ TODO: doc str
 from urllib.parse import urlencode
 from flask import request, redirect
 from pkce import generate_pkce_pair
-from utils import state
-from config import FUSIONAUTH_BASE_URL
+from texserv.utils import state
+from texserv.config import FUSIONAUTH_BASE_URL
 
 
-def handle_register():
+def handle_login():
     """
     TODO: doc str
     """
@@ -33,7 +33,7 @@ def handle_register():
         }
     )
 
-    redirect_url = "".join([FUSIONAUTH_BASE_URL, "/oauth2/register", "?", query])
+    redirect_url = "".join([FUSIONAUTH_BASE_URL, "/oauth2/authorize", "?", query])
 
     response = redirect(redirect_url, code=302)
 

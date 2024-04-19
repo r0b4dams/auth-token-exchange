@@ -1,13 +1,13 @@
-# pylint: disable=W0223
 """
 TODO: doc str
 """
+
 from flask import Blueprint, Flask
 from flask_cors import CORS
 from gunicorn.app.base import BaseApplication
 
 
-class Server(BaseApplication):
+class Texserv(BaseApplication):
     """
     TODO: doc str
     """

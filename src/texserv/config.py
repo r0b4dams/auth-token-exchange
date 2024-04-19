@@ -19,7 +19,7 @@ FUSIONAUTH_CLIENT_SECRET = os.environ.get(
 )
 
 
-config = {
+app_config = {
     "mode": mode,
     "host": host,
     "port": port,

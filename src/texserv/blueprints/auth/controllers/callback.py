@@ -6,8 +6,8 @@ from time import time
 from urllib.parse import urlencode
 from flask import request, redirect
 from requests import post
-from utils import state
-from config import (
+from texserv.utils import state
+from texserv.config import (
     FUSIONAUTH_BASE_URL,
     FUSIONAUTH_CLIENT_ID,
     FUSIONAUTH_CLIENT_SECRET,
