@@ -1,5 +1,5 @@
 """
-TODO: doc str
+texserv.config
 """
 
 import os

@@ -1,6 +1,8 @@
+# pylint: disable=W0223
 """
-TODO: doc str
+texserv.server
 """
+
 
 from flask import Blueprint, Flask
 from flask_cors import CORS
