@@ -3,17 +3,21 @@ dependencies = [
   "flask",
   "flask-cors",
   "gunicorn",
+  "pkce",
   "requests",
 ]
 description = "A server to perform the OAuth token exchange with FusionAuth."
 dynamic = ["version"]
-name = "token-exchange"
+name = "texserv"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
+
+[project.scripts]
+texserv = "texserv.__main__:cli"
 
 [build-system]
 build-backend = "flit_core.buildapi"
 requires = ["flit_core<4"]
 
 [tool.setuptools.dynamic]
-version = {attr = "token_exchange.__version__"}
+version = {attr = "texserv.__version__"}
