@@ -1,53 +1,28 @@
-APP_NAME := token_exchange
+.PHONY: all venv build dev clean
+
+APP_NAME := texserv
 VERSION := $(shell python3 -c "from src import $(APP_NAME); print($(APP_NAME).__version__)")
 VENV := .venv
 PY := $(VENV)/bin/python3
 PIP := $(PY) -m pip
 
-all: venv
+all:
 	@echo "$(APP_NAME) $(VERSION)"
-	@echo "$(VENV) created. Run the following command to activate:"
-	@echo "source $(VENV)/bin/activate" 
 
-.PHONY: venv
 venv:
 	@python3 -m venv $(VENV)
-	@$(MAKE) install
 	@chmod +x $(VENV)/bin/activate
 
-.PHONY: install
-install:
-	@$(PIP) install -r requirements.txt
+build: clean venv
+	@$(PIP) install --upgrade build
+	@$(PY) -m build
 
-.PHONY: save
-save: .venv
-	@$(PIP) freeze > requirements.txt
+install: venv uninstall
+	@$(PIP) install -e .
 
-.PHONY: dev
-dev: .venv
-	@$(PY) src/token_exchange/main.py
+uninstall:
+	@$(PIP) uninstall $(APP_NAME) -y
 
-.PHONY: wsgi
-wsgi: .venv
-	@export MODE=production && $(PY) src/token_exchange/main.py
-
-.PHONY: lint
-lint: .venv
-	@$(PY) -m pylint src
-
-.PHONY: format
-format: .venv
-	@$(PY) -m black src
-
-.PHONY: typecheck
-typecheck: .venv
-	@$(PY) -m mypy src
-
-.PHONY: test
-test: .venv
-	@$(PY) -m pytest tests -v
-
-.PHONY: clean
 clean:
 	@find . \
 	\( -name .venv \
@@ -57,7 +32,3 @@ clean:
 	-o -name "*.pytest_cache" \
 	-o -name "*.egg-info" \
 	\) -exec rm -rf {} +
-
-.PHONY: client
-client:
-	@cd client && yarn && yarn dev
