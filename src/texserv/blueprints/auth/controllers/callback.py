@@ -11,9 +11,6 @@ from texserv.config import (
 
 
 def handle_callback():
-    """
-    TODO: doc str
-    """
     code = request.args.get("code")
     code_verifier = request.cookies.get("code_verifier")
     redirect_uri = "".join([request.scheme, "://", request.host, "/auth/callback"])
