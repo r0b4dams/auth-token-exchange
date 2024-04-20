@@ -1,4 +1,4 @@
-.PHONY: all venv build dev clean
+.PHONY: all venv build dev clean client
 
 APP_NAME := texserv
 VERSION := $(shell python3 -c "from src import $(APP_NAME); print($(APP_NAME).__version__)")
@@ -23,7 +23,7 @@ release:
 	@chmod +x scripts/release
 	@scripts/release
 
-install-dev: venv uninstall
+install: venv uninstall
 	@$(PIP) install -e .
 
 uninstall:
@@ -51,3 +51,17 @@ format: .venv
 
 type: .venv
 	@$(PY) -m mypy src
+
+client:
+	@cd client && yarn && yarn dev
+
+COMPOSE_ENV := --env-file compose.env
+
+docker-up:
+	@docker compose $(COMPOSE_ENV) up
+
+docker-down:
+	@docker compose $(COMPOSE_ENV) down
+
+docker-reset:
+	@docker compose $(COMPOSE_ENV) down -v
