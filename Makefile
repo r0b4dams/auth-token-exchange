@@ -9,6 +9,7 @@ COMPOSE_ENV := --env-file compose.env
 
 all:
 	@echo "$(APP_NAME) $(VERSION)"
+	@$(MAKE) venv
 
 venv:
 	@python3 -m venv $(VENV)
