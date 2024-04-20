@@ -1,10 +1,6 @@
-"""
-TODO: doc str
-"""
-
 from time import time
 from urllib.parse import urlencode
-from flask import request, redirect
+from flask import request, redirect, jsonify
 from requests import post
 from texserv.utils import state
 from texserv.config import (
@@ -20,7 +16,6 @@ def handle_callback():
     """
     code = request.args.get("code")
     code_verifier = request.cookies.get("code_verifier")
-
     redirect_uri = "".join([request.scheme, "://", request.host, "/auth/callback"])
 
     response = post(
@@ -49,7 +44,9 @@ def handle_callback():
     expires_in = data["expires_in"]
 
     if not access_token or not refresh_token:
-        raise Exception("access token or refresh token missing")
+        response = jsonify({"error": "Either refresh token or access token is missing"})
+        response.status_code = 401
+        return response
 
     redirect_url = state.generate_redirect_url(request)
     response = redirect(redirect_url)
@@ -66,7 +63,6 @@ def handle_callback():
         max_age=expires_in_ms,
     )
 
-    # save tokens
     response.set_cookie(
         "app.at", access_token, httponly=True, secure=True, samesite="lax"
     )
@@ -77,7 +73,7 @@ def handle_callback():
         "app.idt", id_token, httponly=False, secure=True, samesite="lax"
     )
 
-    # cleanup
+    # clean up cookie set in login/register
     response.delete_cookie("code_verifier")
 
     return response
