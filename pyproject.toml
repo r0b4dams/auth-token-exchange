@@ -1,4 +1,7 @@
 [project]
+authors = [
+  {name = "Robert Adams", email = "r0b4dams@gmail.com"},
+]
 dependencies = [
   "flask",
   "flask-cors",
@@ -6,8 +9,8 @@ dependencies = [
   "pkce",
   "requests",
 ]
-description = "A server to perform the OAuth token exchange with FusionAuth."
-dynamic = ["version"]
+dynamic = ["version", "description"]
+license = {file = "LICENSE"}
 name = "texserv"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -19,5 +22,5 @@ texserv = "texserv.__main__:cli"
 build-backend = "flit_core.buildapi"
 requires = ["flit_core<4"]
 
-[tool.setuptools.dynamic]
-version = {attr = "texserv.__version__"}
+[tool.pylint."MESSAGES CONTROL"]
+disable = "missing-module-docstring"
