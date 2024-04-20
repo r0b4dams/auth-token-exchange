@@ -1,23 +1,66 @@
-.PHONY: setup dev add save clean
+.PHONY: all venv build dev clean client
 
-install: clean
-	test -f requirements.txt || touch requirements.txt
-	python3 -m venv .venv
-	.venv/bin/pip install -r requirements.txt
+APP_NAME := texserv
+VERSION := $(shell python3 -c "from src import $(APP_NAME); print($(APP_NAME).__version__)")
+VENV := .venv
+PY := $(VENV)/bin/python3
+PIP := $(PY) -m pip
 
-dev: .venv
-	@.venv/bin/python3 src/main.py
+all:
+	@echo "$(APP_NAME) $(VERSION)"
 
-preview: .venv
-	@export MODE=production && .venv/bin/python3 src/main.py
+venv:
+	@python3 -m venv $(VENV)
+	@$(PIP) install --upgrade pip
+	@$(PIP) install --upgrade build black mypy pylint pytest pytest-mock
+	@chmod +x $(VENV)/bin/activate
 
-add: .venv
-	@.venv/bin/pip install $(pkg)
-	@$(MAKE) save
+build: clean venv
+	@$(PIP) install --upgrade build
+	@$(PY) -m build
 
-save: .venv
-	@.venv/bin/pip freeze > requirements.txt
+release:
+	@chmod +x scripts/release
+	@scripts/release
+
+install: venv uninstall
+	@$(PIP) install -e .
+
+uninstall:
+	@$(PIP) uninstall $(APP_NAME) -y
 
 clean:
-	@rm -rf .venv
-	@find . -type f -name "*.pyc" -delete
+	@find . \
+	\( -name .venv \
+	-o -name dist \
+	-o -name __pycache__ \
+	-o -name "*.mypy_cache" \
+	-o -name "*.pytest_cache" \
+	-o -name "*.egg-info" \
+	\) -exec rm -rf {} +
+
+test: .venv
+	@$(PY) -m pytest tests -v
+
+lint: .venv
+	@$(PY) -m pylint src --ignore-paths src/pyrob/__template__
+
+format: .venv
+	@$(PY) -m black src
+
+type: .venv
+	@$(PY) -m mypy src
+
+client:
+	@cd client && yarn && yarn dev
+
+COMPOSE_ENV := --env-file compose.env
+
+docker-up:
+	@docker compose $(COMPOSE_ENV) up
+
+docker-down:
+	@docker compose $(COMPOSE_ENV) down
+
+docker-reset:
+	@docker compose $(COMPOSE_ENV) down -v

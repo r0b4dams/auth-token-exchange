@@ -1,0 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+A server to handle the OAuth token exchange with FusionAuth.
+"""
+
+
+__app_name__ = __name__  # for use in __main__ to avoid override
+__version__ = "0.7.0"
