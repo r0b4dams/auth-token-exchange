@@ -1,16 +1,9 @@
-"""
-TODO: doc str
-"""
-
 from urllib.parse import urlencode
 from flask import Request
 from texserv.utils import b64
 
 
 def generate_redirect_url(req: Request) -> str:
-    """
-    TODO: doc str
-    """
     encoded_uri, state, *_ = req.args.get("state").split(":")
     redirect_uri = b64.decode(encoded_uri)
     query = urlencode(
@@ -24,8 +17,5 @@ def generate_redirect_url(req: Request) -> str:
 
 
 def push_redirect_url(redirect_uri: str, state: str) -> str:
-    """
-    TODO: doc str
-    """
     encoded_uri = b64.encode(redirect_uri)
     return ":".join([encoded_uri, state])
