@@ -1,3 +1,3 @@
-from .auth import auth_blueprint
+from . import auth
 
-app_blueprints = [auth_blueprint]
+app_blueprints = [auth.auth_blueprint]

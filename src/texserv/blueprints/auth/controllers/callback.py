@@ -1,39 +1,35 @@
 from time import time
 from urllib.parse import urlencode
-from flask import request, redirect, jsonify
-from requests import post
+
+import flask
+import requests
+
 from texserv.utils import state
-from texserv.config import (
-    FUSIONAUTH_BASE_URL,
-    FUSIONAUTH_CLIENT_ID,
-    FUSIONAUTH_CLIENT_SECRET,
-)
+import texserv.config as cfg
 
 
 def handle_callback():
-    code = request.args.get("code")
-    code_verifier = request.cookies.get("code_verifier")
-    redirect_uri = "".join([request.scheme, "://", request.host, "/auth/callback"])
+    req = flask.request
+    redirect_uri = "".join([req.scheme, "://", req.host, "/auth/callback"])
 
-    response = post(
-        url="".join([FUSIONAUTH_BASE_URL, "/oauth2/token"]),
+    fusionauth_res = requests.post(
+        url="".join([cfg.FUSIONAUTH_BASE_URL, "/oauth2/token"]),
         headers={
             "Content-Type": "application/x-www-form-urlencoded",
         },
         data=urlencode(
             {
                 "grant_type": "authorization_code",
-                "code": code,
-                "code_verifier": code_verifier,
+                "code": req.args.get("code"),
+                "code_verifier": req.cookies.get("code_verifier"),
                 "redirect_uri": redirect_uri,
-                "client_id": FUSIONAUTH_CLIENT_ID,
-                "client_secret": FUSIONAUTH_CLIENT_SECRET,
+                "client_id": cfg.FUSIONAUTH_CLIENT_ID,
+                "client_secret": cfg.FUSIONAUTH_CLIENT_SECRET,
             }
         ),
         timeout=10,
     )
-
-    data = response.json()
+    data = fusionauth_res.json()
 
     access_token = data["access_token"]
     refresh_token = data["refresh_token"]
@@ -41,17 +37,19 @@ def handle_callback():
     expires_in = data["expires_in"]
 
     if not access_token or not refresh_token:
-        response = jsonify({"error": "Either refresh token or access token is missing"})
-        response.status_code = 401
-        return response
+        res = flask.jsonify(
+            {"error": "Either refresh token or access token is missing"},
+        )
+        res.status_code = 503
+        return res
 
-    redirect_url = state.generate_redirect_url(request)
-    response = redirect(redirect_url)
+    redirect_url = state.generate_redirect_url(req)
+    res = flask.redirect(redirect_url)
 
     # set token expiration in a readable cookie
     time_ms = int(time() * 1000)
     expires_in_ms = int(expires_in * 1000)
-    response.set_cookie(
+    res.set_cookie(
         "app.at_exp",
         str(time_ms + expires_in_ms),
         httponly=False,
@@ -59,18 +57,29 @@ def handle_callback():
         samesite="lax",
         max_age=expires_in_ms,
     )
-
-    response.set_cookie(
-        "app.at", access_token, httponly=True, secure=True, samesite="lax"
+    res.set_cookie(
+        "app.idt",
+        id_token,
+        httponly=False,
+        secure=True,
+        samesite="lax",
     )
-    response.set_cookie(
-        "app.rt", refresh_token, httponly=True, secure=True, samesite="lax"
+    res.set_cookie(
+        "app.at",
+        access_token,
+        httponly=True,
+        secure=True,
+        samesite="lax",
     )
-    response.set_cookie(
-        "app.idt", id_token, httponly=False, secure=True, samesite="lax"
+    res.set_cookie(
+        "app.rt",
+        refresh_token,
+        httponly=True,
+        secure=True,
+        samesite="lax",
     )
 
     # clean up cookie set in login/register
-    response.delete_cookie("code_verifier")
+    res.delete_cookie("code_verifier")
 
-    return response
+    return res

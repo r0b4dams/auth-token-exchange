@@ -1,9 +1,11 @@
 from urllib.parse import urlencode
-from flask import Request
+
+import flask
+
 from texserv.utils import b64
 
 
-def generate_redirect_url(req: Request) -> str:
+def generate_redirect_url(req: flask.Request) -> str:
     encoded_uri, state, *_ = req.args.get("state").split(":")
     redirect_uri = b64.decode(encoded_uri)
     query = urlencode(
