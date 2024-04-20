@@ -30,7 +30,6 @@ uninstall:
 	@$(PIP) uninstall $(APP_NAME) -y
 
 clean:
-	@scripts/clear_tags
 	@find . \
 	\( -name .venv \
 	-o -name dist \
