@@ -38,7 +38,7 @@ clean:
 	\) -exec rm -rf {} +
 
 test: .venv
-	@$(PY) -m pytest tests -v
+	@$(PY) -m pytest tests
 
 lint: .venv
 	@$(PY) -m pylint src --ignore-paths src/pyrob/__template__
