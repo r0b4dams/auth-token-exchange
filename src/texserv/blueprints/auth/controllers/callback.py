@@ -43,7 +43,8 @@ def handle_callback():
         res.status_code = 503
         return res
 
-    redirect_url = state.generate_redirect_url(req)
+    user_state = req.args.get("state", default="")
+    redirect_url = state.generate_redirect_url(user_state)
     res = flask.redirect(redirect_url)
 
     # set token expiration in a readable cookie
