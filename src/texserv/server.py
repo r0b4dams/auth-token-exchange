@@ -49,5 +49,6 @@ class Texserv(gunicorn.app.base.BaseApplication):  # pylint: disable=abstract-me
             self.cfg.set(key, value)
 
     def register_blueprints(self, blueprints: list[flask.Blueprint]):
-        for blueprint in blueprints:
-            self._app.register_blueprint(blueprint)
+        if blueprints is not None:
+            for blueprint in blueprints:
+                self._app.register_blueprint(blueprint)
