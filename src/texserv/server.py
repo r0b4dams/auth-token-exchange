@@ -1,9 +1,9 @@
-from flask import Blueprint, Flask
-from flask_cors import CORS
-from gunicorn.app.base import BaseApplication
+import flask
+import flask_cors
+import gunicorn.app.base
 
 
-class Texserv(BaseApplication): # pylint: disable=abstract-method
+class Texserv(gunicorn.app.base.BaseApplication):  # pylint: disable=abstract-method
     """
     Texserv is the top-level class managing the application
 
@@ -13,11 +13,16 @@ class Texserv(BaseApplication): # pylint: disable=abstract-method
         blueprints: A list of Flask blueprint instances
     """
 
-    def __init__(self, name: str, config: dict[str, str], blueprints: list[Blueprint]):
-        self._app = Flask(name)
+    def __init__(
+        self,
+        name: str,
+        config: dict[str, str],
+        blueprints: list[flask.Blueprint],
+    ):
+        self._app = flask.Flask(name)
         self._config = config
         self.register_blueprints(blueprints)
-        CORS(self._app, supports_credentials=True)
+        flask_cors.CORS(self._app, supports_credentials=True)
         super().__init__()
 
     def listen(self):
@@ -43,6 +48,6 @@ class Texserv(BaseApplication): # pylint: disable=abstract-method
         for key, value in gunicorn_config.items():
             self.cfg.set(key, value)
 
-    def register_blueprints(self, blueprints: list[Blueprint]):
+    def register_blueprints(self, blueprints: list[flask.Blueprint]):
         for blueprint in blueprints:
             self._app.register_blueprint(blueprint)
