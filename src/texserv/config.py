@@ -1,7 +1,3 @@
-"""
-texserv.config
-"""
-
 import os
 
 FUSIONAUTH_BASE_URL = os.environ.get("FUSIONAUTH_BASE_URL", "http://localhost:9011")
