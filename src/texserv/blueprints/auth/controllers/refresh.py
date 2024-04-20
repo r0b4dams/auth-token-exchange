@@ -1,7 +1,3 @@
-"""
-TODO: doc str
-"""
-
 from urllib.parse import urlencode
 from time import time
 from flask import request, make_response

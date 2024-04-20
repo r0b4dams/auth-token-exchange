@@ -1,18 +1,11 @@
-"""
-TODO: doc str
-"""
-
 from urllib.parse import urlencode
-from flask import request, redirect
+from flask import request, redirect, Response
 from pkce import generate_pkce_pair
 from texserv.utils import state
 from texserv.config import FUSIONAUTH_BASE_URL
 
 
-def handle_login():
-    """
-    TODO: doc str
-    """
+def handle_login() -> Response:
     new_state = state.push_redirect_url(
         request.args.get("redirect_uri"), request.args.get("state")
     )

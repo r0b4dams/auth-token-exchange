@@ -1,7 +1,3 @@
-"""
-TODO: doc str
-"""
-
 from urllib.parse import urlencode
 from flask import request, redirect
 from texserv.config import FUSIONAUTH_BASE_URL

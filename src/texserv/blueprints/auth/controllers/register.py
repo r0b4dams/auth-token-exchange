@@ -1,7 +1,3 @@
-"""
-TODO: doc str
-"""
-
 from urllib.parse import urlencode
 from flask import request, redirect
 from pkce import generate_pkce_pair
