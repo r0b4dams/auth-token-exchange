@@ -21,6 +21,3 @@ texserv = "texserv.__main__:cli"
 [build-system]
 build-backend = "flit_core.buildapi"
 requires = ["flit_core<4"]
-
-[tool.pylint."MESSAGES CONTROL"]
-disable = "missing-module-docstring"
