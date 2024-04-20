@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-texserv
-"""
 
 import argparse
 from .server import Texserv
@@ -13,24 +10,35 @@ from . import __version__, __app_name__
 
 def cli():
     """
-    A CLI to run the server
+    texserv [-h] [-v] {run} ...
+
+    A server to handle the OAuth token exchange with FusionAuth.
+
+    [options]:
+    -h, --help     show this help message and exit
+    -v, --version  show program's version number and exit
+
+    {commands}:
+        run [-h] (-d | -p)  start the server and listen forever
+            -h, --help      show this help message and exit
+            -d, --dev       run the server in development using Flask's debug mode
+            -p, --prod      run the server for production with Gunicorn
     """
     parser = argparse.ArgumentParser(
         prog=__app_name__,
-        description="A server to handle the OAuth token exchange build with Flask",
+        description="A server to handle the OAuth token exchange with FusionAuth.",
     )
 
     parser.add_argument(
-        "-v",
-        "--version",
-        action="version",
-        version=f"%(prog)s {__version__}",
+        "-v", "--version", action="version", version=f"%(prog)s:{__version__}"
     )
 
-    subparsers = parser.add_subparsers(title="command")
+    subparsers = parser.add_subparsers(title="commands", help="command help")
 
-    run_cmd = subparsers.add_parser("run")
-    run_group = run_cmd.add_mutually_exclusive_group()
+    run_cmd = subparsers.add_parser(
+        "run", description="start the server and run forever", help="runs the server"
+    )
+    run_group = run_cmd.add_mutually_exclusive_group(required=True)
     run_group.add_argument(
         "-d",
         "--dev",
