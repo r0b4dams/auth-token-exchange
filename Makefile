@@ -5,6 +5,7 @@ VERSION := $(shell python3 -c "from src import $(APP_NAME); print($(APP_NAME).__
 VENV := .venv
 PY := $(VENV)/bin/python3
 PIP := $(PY) -m pip
+COMPOSE_ENV := --env-file compose.env
 
 all:
 	@echo "$(APP_NAME) $(VERSION)"
@@ -13,15 +14,12 @@ venv:
 	@python3 -m venv $(VENV)
 	@$(PIP) install --upgrade pip
 	@$(PIP) install --upgrade build black mypy pylint pytest pytest-mock
+	@mypy --install-types src
 	@chmod +x $(VENV)/bin/activate
 
 build: clean venv
 	@$(PIP) install --upgrade build
 	@$(PY) -m build
-
-release:
-	@chmod +x scripts/release
-	@scripts/release
 
 install: venv uninstall
 	@$(PIP) install -e .
@@ -53,8 +51,6 @@ type: .venv
 
 client:
 	@cd client && yarn && yarn dev
-
-COMPOSE_ENV := --env-file compose.env
 
 docker-up:
 	@docker compose $(COMPOSE_ENV) up
