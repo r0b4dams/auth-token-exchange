@@ -14,7 +14,7 @@ all:
 venv:
 	@python3 -m venv $(VENV)
 	@$(PIP) install --upgrade pip
-	@$(PIP) install --upgrade build black mypy pylint pytest pytest-mock
+	@$(PIP) install --upgrade build black mypy pylint pytest
 	@chmod +x $(VENV)/bin/activate
 
 build: clean venv
@@ -46,8 +46,8 @@ lint: .venv
 format: .venv
 	@$(PY) -m black src
 
-type: .venv
-	@$(PY) -m mypy --install-types src
+typecheck: .venv
+	@$(PY) -m mypy --install-types --non-interactive src
 	@$(PY) -m mypy src
 
 client:
