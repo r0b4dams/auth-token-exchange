@@ -85,7 +85,7 @@ services:
 
   smtp:
     container_name: mailcatcher
-    image: sj26/mailcatcher
+    image: sj26/mailcatcher:v0.9.0
     ports:
       - "1025:1025"
       - "1080:1080"
