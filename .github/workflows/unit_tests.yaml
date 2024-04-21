@@ -8,8 +8,8 @@ on:
 
 jobs:
   test:
-  name: Unit tests
-  runs-on: ubuntu-latest
+    name: Unit tests
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
