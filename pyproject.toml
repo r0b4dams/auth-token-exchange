@@ -11,12 +11,12 @@ dependencies = [
 ]
 dynamic = ["version", "description"]
 license = {file = "LICENSE"}
-name = "texserv"
+name = "authexchange"
 readme = "README.md"
 requires-python = ">=3.10"
 
 [project.scripts]
-texserv = "texserv.__main__:cli"
+authexchange = "authexchange.__main__:cli"
 
 [build-system]
 build-backend = "flit_core.buildapi"
