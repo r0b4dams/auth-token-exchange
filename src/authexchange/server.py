@@ -3,7 +3,7 @@ import flask_cors
 import gunicorn.app.base
 
 
-class ExchangeServer(gunicorn.app.base.BaseApplication):  # pylint: disable=abstract-method
+class ExchangeServer(gunicorn.app.base.BaseApplication):
     """
     Texserv is the top-level class managing the application
 
