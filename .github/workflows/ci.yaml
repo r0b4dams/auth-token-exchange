@@ -8,7 +8,7 @@ on:
 
 jobs:
   ci:
-    name: Linting
+    name: CI
     runs-on: ubuntu-latest
 
     strategy:
