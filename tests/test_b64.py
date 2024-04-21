@@ -1,4 +1,4 @@
-from texserv.utils import b64
+from authexchange.utils import b64
 
 
 def test_encode():

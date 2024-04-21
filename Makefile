@@ -1,7 +1,8 @@
 .PHONY: all venv build dev clean client
 
-APP_NAME := texserv
-VERSION := $(shell python3 -c "from src import $(APP_NAME); print($(APP_NAME).__version__)")
+ORG := r0b4dams
+APP_NAME := authexchange
+VERSION := $(shell cd src && python3 -c "import $(APP_NAME); print($(APP_NAME).__version__)")
 VENV := .venv
 PY := $(VENV)/bin/python3
 PIP := $(PY) -m pip
@@ -61,3 +62,12 @@ docker-down:
 
 docker-reset:
 	@docker compose $(COMPOSE_ENV) down -v
+
+docker-build: build
+	@docker build \
+	--build-arg NAME=$(APP_NAME) \
+	--build-arg VERSION=$(VERSION) \
+	-t $(ORG)/$(APP_NAME):$(VERSION) .
+
+docker-run:
+	@docker run --add-host host.docker.internal:host-gateway $(ORG)/$(APP_NAME):$(VERSION)

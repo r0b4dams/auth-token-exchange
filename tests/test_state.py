@@ -1,4 +1,4 @@
-from texserv.utils.state import (
+from authexchange.utils.state import (
     generate_redirect_url,
     push_redirect_url,
 )

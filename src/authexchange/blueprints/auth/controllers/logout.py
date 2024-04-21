@@ -2,7 +2,7 @@ from urllib.parse import urlencode
 
 import flask
 
-import texserv.config as cfg
+import authexchange.config as cfg
 
 COOKIE_KEYS = [
     "app.at",
