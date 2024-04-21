@@ -70,4 +70,4 @@ docker-build: build
 	-t $(ORG)/$(APP_NAME):$(VERSION) .
 
 docker-run:
-	@docker run -p 9000:9000 $(ORG)/$(APP_NAME):$(VERSION)
+	@docker run --add-host host.docker.internal:host-gateway $(ORG)/$(APP_NAME):$(VERSION)
