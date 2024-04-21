@@ -1,7 +1,7 @@
 import flask
 import requests
 
-import texserv.config as cfg
+import authexchange.config as cfg
 
 
 def handle_user():

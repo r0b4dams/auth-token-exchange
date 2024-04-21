@@ -3,8 +3,8 @@ from urllib.parse import urlencode
 import flask
 import pkce
 
-from texserv.utils import state
-import texserv.config as cfg
+from authexchange.utils import state
+import authexchange.config as cfg
 
 
 def handle_signup():

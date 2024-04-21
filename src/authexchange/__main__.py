@@ -5,8 +5,8 @@
 import argparse
 
 from . import (
+    __name__ as app_name,
     __version__,
-    __app_name__,
     server,
     blueprints,
     config,
@@ -30,7 +30,7 @@ def cli():
             -p, --prod      run the server for production with Gunicorn
     """
     parser = argparse.ArgumentParser(
-        prog=__app_name__,
+        prog=app_name,
         description="App to handle the OAuth token exchange with FusionAuth.",
     )
 
@@ -38,7 +38,7 @@ def cli():
         "-v",
         "--version",
         action="version",
-        version=f"%(prog)s:{__version__}",
+        version=f"%(prog)s v{__version__}",
     )
 
     subparsers = parser.add_subparsers(
@@ -88,4 +88,4 @@ def run(args: argparse.Namespace):
     cfg = config.app_config
     bps = blueprints.app_blueprints
 
-    server.Texserv(__app_name__, cfg, bps).listen()
+    server.ExchangeServer(app_name, cfg, bps).listen()
