@@ -1,6 +1,6 @@
 import flask
 from gunicorn.app import base
-from src.texserv import server
+from src.authexchange import server
 
 
 def test_server_init():
