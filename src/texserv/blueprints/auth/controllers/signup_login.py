@@ -15,7 +15,7 @@ def handle_login():
     return handle_signup_login("authorize")
 
 
-def handle_signup_login(authtype: str) -> flask.Response:
+def handle_signup_login(authtype: str):
     """
     Except for the url, the process for signup and login are identical
 
@@ -28,8 +28,8 @@ def handle_signup_login(authtype: str) -> flask.Response:
     """
     req = flask.request
     new_state = state.push_redirect_url(
-        req.args.get("redirect_uri"),
-        req.args.get("state"),
+        req.args.get("redirect_uri", default=req.host_url),
+        req.args.get("state", default=""),
     )
     code_verifier, code_challenge = pkce.generate_pkce_pair()
     redirect_uri = "".join(

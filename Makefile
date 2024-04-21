@@ -14,7 +14,7 @@ all:
 venv:
 	@python3 -m venv $(VENV)
 	@$(PIP) install --upgrade pip
-	@$(PIP) install --upgrade build black mypy pylint pytest pytest-mock
+	@$(PIP) install --upgrade build black mypy pylint pytest
 	@chmod +x $(VENV)/bin/activate
 
 build: clean venv
@@ -38,7 +38,7 @@ clean:
 	\) -exec rm -rf {} +
 
 test: .venv
-	@$(PY) -m pytest tests -v
+	@$(PY) -m pytest tests
 
 lint: .venv
 	@$(PY) -m pylint src --ignore-paths src/pyrob/__template__
@@ -46,8 +46,8 @@ lint: .venv
 format: .venv
 	@$(PY) -m black src
 
-type: .venv
-	@$(PY) -m mypy --install-types src
+typecheck: .venv
+	@$(PY) -m mypy --install-types --non-interactive src
 	@$(PY) -m mypy src
 
 client:

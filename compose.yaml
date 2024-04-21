@@ -1,32 +1,33 @@
-name: auth-stack
-version: "3"
+version: '3'
+name: "auth_services"
 
 services:
   fusionauth:
     container_name: fusionauth
-    image: fusionauth/fusionauth-app:latest
+    image: fusionauth/fusionauth-app:1.49.2
     depends_on:
-      database:
+      db:
         condition: service_healthy
-      elasticsearch:
+      search:
+        condition: service_healthy
+      smtp:
         condition: service_healthy
     environment:
-      DATABASE_URL: jdbc:postgresql://database:5432/fusionauth
+      DATABASE_URL: jdbc:postgresql://db:5432/fusionauth
       DATABASE_ROOT_USERNAME: ${POSTGRES_USER}
       DATABASE_ROOT_PASSWORD: ${POSTGRES_PASSWORD}
-      DATABASE_USERNAME: ${FUSIONAUTH_DATABASE_USERNAME}
-      DATABASE_PASSWORD: ${FUSIONAUTH_DATABASE_PASSWORD}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       FUSIONAUTH_APP_MEMORY: ${FUSIONAUTH_APP_MEMORY}
-      FUSIONAUTH_APP_RUNTIME_MODE: development
+      FUSIONAUTH_APP_RUNTIME_MODE: ${FUSIONAUTH_APP_RUNTIME_MODE}
       FUSIONAUTH_APP_URL: http://fusionauth:9011
-      SEARCH_SERVERS: http://elasticsearch:9200
+      SEARCH_SERVERS: http://search:9200
       SEARCH_TYPE: elasticsearch
       FUSIONAUTH_APP_KICKSTART_FILE: ${FUSIONAUTH_APP_KICKSTART_FILE}
     networks:
-      - auth_net
       - db_net
       - search_net
-      - mail_net
+      - mailcatcher_net
     restart: unless-stopped
     ports:
       - 9011:9011
@@ -34,10 +35,9 @@ services:
       - fusionauth_config:/usr/local/fusionauth/config
       - ./kickstart:/usr/local/fusionauth/kickstart
 
-  database:
-    container_name: database
-    image: postgres:12.9
-    restart: unless-stopped
+  db:
+    container_name: postgres
+    image: postgres:16.0-bookworm
     environment:
       PGDATA: /var/lib/postgresql/data/pgdata
       POSTGRES_USER: ${POSTGRES_USER}
@@ -49,67 +49,59 @@ services:
       retries: 5
     networks:
       - db_net
+    restart: unless-stopped
     volumes:
       - db_data:/var/lib/postgresql/data
 
-  elasticsearch:
-    container_name: elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+  search:
+    container_name: opensearch
+    image: opensearchproject/opensearch:2.11.0
     environment:
       cluster.name: fusionauth
-      bootstrap.memory_lock: "true"
       discovery.type: single-node
-      xpack.security.enabled: false # suppress warnings
-      ES_JAVA_OPTS: ${ES_JAVA_OPTS}
-    restart: unless-stopped
+      node.name: search
+      plugins.security.disabled: true
+      bootstrap.memory_lock: true
+      OPENSEARCH_JAVA_OPTS: ${OPENSEARCH_JAVA_OPTS}
     healthcheck:
-      test:
-        [
-          "CMD",
-          "curl",
-          "--fail",
-          "--write-out",
-          "'HTTP %{http_code}'",
-          "--silent",
-          "--output",
-          "/dev/null",
-          "http://localhost:9200/"
-        ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - search_net
+      interval: 10s
+      retries: 80
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:9200/
+    restart: unless-stopped
     ulimits:
       memlock:
         soft: -1
         hard: -1
-    volumes:
-      - search_data:/usr/share/elasticsearch/data
-
-  # SMTP server
-  mailcatcher:
-    container_name: mailcatcher
-    restart: on-failure
-    image: dockage/mailcatcher:0.9.0
+      nofile:
+        soft: 65536
+        hard: 65536
     ports:
-      - "1025:1025" # send
-      - "1080:1080" # view
+      - 9200:9200 # REST API
+      - 9600:9600 # Performance Analyzer
+    volumes:
+      - search_data:/usr/share/opensearch/data
     networks:
-      - mail_net
+      - search_net
+
+  smtp:
+    container_name: mailcatcher
+    image: sj26/mailcatcher
+    ports:
+      - "1025:1025"
+      - "1080:1080"
+    healthcheck:
+      interval: 10s
+      retries: 80
+      test: wget -q -O /dev/null http://mailcatcher:1080/
+    networks:
+      - mailcatcher_net
 
 networks:
-  auth_net:
-    name: auth_net
-    driver: bridge
   db_net:
-    name: db_net
     driver: bridge
   search_net:
-    name: search_net
     driver: bridge
-  mail_net:
-    name: mail_net
+  mailcatcher_net:
     driver: bridge
 
 volumes:

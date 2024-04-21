@@ -1,21 +1,10 @@
-from urllib.parse import urlencode
-
-import flask
-
 from texserv.utils import b64
 
 
-def generate_redirect_url(req: flask.Request) -> str:
-    encoded_uri, state, *_ = req.args.get("state").split(":")
+def generate_redirect_url(state: str) -> str:
+    encoded_uri, *_ = state.split(":")
     redirect_uri = b64.decode(encoded_uri)
-    query = urlencode(
-        {
-            "state": state,
-            "user_state": req.args.get("state"),
-            "locale": req.args.get("state"),
-        }
-    )
-    return "".join([redirect_uri, "?", query])
+    return redirect_uri
 
 
 def push_redirect_url(redirect_uri: str, state: str) -> str:
