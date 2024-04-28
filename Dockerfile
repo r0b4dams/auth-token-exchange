@@ -1,8 +1,6 @@
 FROM python:3.10-slim
 
-ARG NAME
-ARG VERSION
-ARG TARBALL=${NAME}-${VERSION}.tar.gz
+ARG TARBALL
 
 COPY dist/${TARBALL} .
 
