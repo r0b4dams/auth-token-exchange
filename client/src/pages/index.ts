@@ -1,3 +1,4 @@
-export { _404_ } from "./_404_";
-export { Home } from "./Home";
-export { Profile } from "./Profile";
+export { AccountPage } from "./AccountPage";
+export { HomePage } from "./HomePage";
+export { MakeChangePage } from "./MakeChangePage";
+export { ProfilePage } from "./ProfilePage";

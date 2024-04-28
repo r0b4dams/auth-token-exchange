@@ -1,4 +1,3 @@
-export { Header } from "./Header";
-export { Footer } from "./Footer";
-export { Button } from "./Button";
 export { Loader } from "./Loader";
+export { LogoHeader } from "./LogoHeader";
+export { MenuBar } from "./MenuBar";

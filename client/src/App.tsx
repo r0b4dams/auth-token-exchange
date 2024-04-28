@@ -1,21 +1,11 @@
 import { useEffect, useState } from "react";
-import { FusionAuthProvider, useFusionAuth } from "@fusionauth/react-sdk";
-import { AppRouter } from "./AppRouter";
-import { Loader } from "./components";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { useFusionAuth } from "@fusionauth/react-sdk";
 
-const config = {
-  clientId: import.meta.env.VITE_FUSIONAUTH_CLIENT_ID,
-  serverUrl: import.meta.env.VITE_TOKEN_EXCHANGE_URL,
-  redirectUri: import.meta.env.VITE_TOKEN_EXCHANGE_REDIRECT_URL,
+import { AccountPage, HomePage, MakeChangePage, ProfilePage } from "./pages";
+import { Loader, LogoHeader, MenuBar } from "./components";
 
-  loginPath: "/auth/login",
-  logoutPath: "/auth/logout",
-  registerPath: "/auth/register",
-  tokenRefreshPath: "/auth/refresh",
-  mePath: "/auth/user",
-};
-
-const _App_ = () => {
+export const App = () => {
   const { isFetchingUserInfo } = useFusionAuth();
   const [ready, setReady] = useState(false);
 
@@ -23,13 +13,26 @@ const _App_ = () => {
     setTimeout(() => setReady(true), 1500);
   }, [isFetchingUserInfo]);
 
-  return ready ? <AppRouter /> : <Loader />;
-};
+  if (!ready) {
+    return <Loader />;
+  }
 
-export const App = () => {
   return (
-    <FusionAuthProvider {...config}>
-      <_App_ />
-    </FusionAuthProvider>
+    <div id="page-container">
+      <div id="page-header">
+        <LogoHeader />
+        <MenuBar />
+      </div>
+
+      <div style={{ flex: 1 }}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/make-change" element={<MakeChangePage />} />
+          <Route path="/account" element={<AccountPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </div>
+    </div>
   );
 };
