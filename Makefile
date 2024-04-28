@@ -9,13 +9,15 @@ PIP := $(PY) -m pip
 COMPOSE_ENV := --env-file compose.env
 IMAGE := $(ORG)/$(APP_NAME):$(VERSION)
 
+DEV_FUSIONAUTH_CLIENT_ID := 6e4e9805-9690-476f-a7d8-2552992c41e1
+DEV_FUSIONAUTH_CLIENT_SECRET := ZyYv1MrS4XjCZKMu0YShVXsGbXoHw57pkXNBcSukY48
+
 all:
 	@echo "$(APP_NAME) $(VERSION)"
 	@$(MAKE) venv
 
-check:
-	@TEST=hamina
-	@TEST=hamina && echo $TEST
+version:
+	@echo $(VERSION)
 
 venv: clean
 	@python3 -m venv $(VENV)
@@ -28,20 +30,19 @@ install: .venv
 
 dev: install
 	@ \
-	FUSIONAUTH_CLIENT_ID=6e4e9805-9690-476f-a7d8-2552992c41e1 \
-	FUSIONAUTH_CLIENT_SECRET=ZyYv1MrS4XjCZKMu0YShVXsGbXoHw57pkXNBcSukY48 \
+	FUSIONAUTH_CLIENT_ID=$(DEV_FUSIONAUTH_CLIENT_ID) \
+	FUSIONAUTH_CLIENT_SECRET=$(DEV_FUSIONAUTH_CLIENT_SECRET) \
 	authexchange run --dev
 
 wsgi: install
 	@ \
-	FUSIONAUTH_CLIENT_ID=6e4e9805-9690-476f-a7d8-2552992c41e1 \
-	FUSIONAUTH_CLIENT_SECRET=ZyYv1MrS4XjCZKMu0YShVXsGbXoHw57pkXNBcSukY48 \
+	FUSIONAUTH_CLIENT_ID=$(DEV_FUSIONAUTH_CLIENT_ID) \
+	FUSIONAUTH_CLIENT_SECRET=$(DEV_FUSIONAUTH_CLIENT_SECRET) \
 	authexchange run --prod
 
 build: clean venv
 	@$(PIP) install --upgrade build
 	@$(PY) -m build
-
 
 uninstall:
 	@$(PIP) uninstall $(APP_NAME) -y
@@ -78,6 +79,9 @@ docker-build: build
 	--build-arg VERSION=$(VERSION) \
 	-t $(IMAGE) .
 
+docker-push: docker-build
+	@docker push $(IMAGE)
+
 docker-run:
 	docker run -p 9000:9000 $(IMAGE)
 
@@ -89,3 +93,7 @@ docker-down:
 
 docker-reset:
 	@docker compose $(COMPOSE_ENV) down -v
+
+release:
+	@chmod +x scripts/release
+	@scripts/release
