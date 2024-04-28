@@ -9,4 +9,4 @@ COPY dist/${TARBALL} .
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install --no-cache-dir $TARBALL
 
-ENTRYPOINT authexchange run -p
+ENTRYPOINT HOST="0.0.0.0" authexchange run --prod
