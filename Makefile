@@ -79,7 +79,7 @@ docker-build: dist
 	--build-arg TARBALL=$(NAME)-$(VERSION).tar.gz \
 	-t $(IMAGE) .
 
-docker-push: docker-build
+docker-push:
 	@docker push $(IMAGE)
 
 docker-run:
