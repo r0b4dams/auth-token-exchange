@@ -4,4 +4,4 @@
 """
 A server to handle the OAuth token exchange with FusionAuth.
 """
-__version__ = "0.7.5"
+__version__ = "0.7.6"

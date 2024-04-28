@@ -79,7 +79,7 @@ jobs:
     runs-on: ubuntu-latest
 
     environment:
-      name: pypi
+      name: PyPI
       url: https://pypi.org/p/authexchange
 
     permissions:
@@ -99,6 +99,10 @@ jobs:
     name: Push image to Dockerhub
     needs: [release]
     runs-on: ubuntu-latest
+
+    environment:
+    name: Docker Hub
+    url: https://hub.docker.com/repository/docker/r0b4dams/authexchange
 
     steps:
       - name: Checkout
