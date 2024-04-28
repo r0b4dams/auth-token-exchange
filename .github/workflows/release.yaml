@@ -33,69 +33,69 @@ jobs:
           name: python-package-distributions
           path: dist/
 
-  # release:
-  #   name: GitHub release
-  #   needs: [build]
-  #   runs-on: ubuntu-latest
+  release:
+    name: GitHub release
+    needs: [build]
+    runs-on: ubuntu-latest
 
-  #   permissions:
-  #     contents: write
-  #     id-token: write
+    permissions:
+      contents: write
+      id-token: write
 
-  #   steps:
-  #     - name: Download
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: python-package-distributions
-  #         path: dist/
+    steps:
+      - name: Download
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
 
-  #     - name: Sign the dists with Sigstore
-  #       uses: sigstore/gh-action-sigstore-python@v1.2.3
-  #       with:
-  #         inputs: >-
-  #           ./dist/*.tar.gz
-  #           ./dist/*.whl
+      - name: Sign the dists with Sigstore
+        uses: sigstore/gh-action-sigstore-python@v1.2.3
+        with:
+          inputs: >-
+            ./dist/*.tar.gz
+            ./dist/*.whl
 
-  #     - name: Create GitHub release
-  #       env:
-  #         GITHUB_TOKEN: ${{ github.token }}
-  #       run: >-
-  #         gh release create
-  #         '${{ github.ref_name }}'
-  #         --repo '${{ github.repository }}'
-  #         --notes ""
+      - name: Create GitHub release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          gh release create
+          '${{ github.ref_name }}'
+          --repo '${{ github.repository }}'
+          --notes ""
 
-  #     - name: Upload artifact signatures to GitHub Release
-  #       env:
-  #         GITHUB_TOKEN: ${{ github.token }}
-  #       run: >-
-  #         gh release upload
-  #         '${{ github.ref_name }}' dist/**
-  #         --repo '${{ github.repository }}'
+      - name: Upload artifact signatures to GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          gh release upload
+          '${{ github.ref_name }}' dist/**
+          --repo '${{ github.repository }}'
 
-  # cheeseshop:
-  #   name: Publish to PyPI
-  #   needs: [build]
-  #   runs-on: ubuntu-latest
+  cheeseshop:
+    name: Publish to PyPI
+    needs: [build]
+    runs-on: ubuntu-latest
 
-  #   environment:
-  #     name: pypi
-  #     url: https://pypi.org/p/authexchange
+    environment:
+      name: pypi
+      url: https://pypi.org/p/authexchange
 
-  #   permissions:
-  #     id-token: write
+    permissions:
+      id-token: write
 
-  #   steps:
-  #     - name: Download
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: python-package-distributions
-  #         path: dist/
+    steps:
+      - name: Download
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
 
-  #     - name: Publish
-  #       uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@release/v1
 
-  docker:
+  dockerhub:
     name: Push image to Dockerhub
     needs: [build]
     runs-on: ubuntu-latest
@@ -103,6 +103,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            Makefile
+          sparse-checkout-cone-mode: false
 
       - name: Download
         uses: actions/download-artifact@v4
@@ -122,31 +126,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: debug
-        run: |
-          ls -a
-          cd dist && ls -a
-
-      # - name: Get version
-      #   id: get-version
-      #   run: echo "version=$(make version)" >> "$GITHUB_OUTPUT"
-
       - name: Build and push
         run: |
-          make version
           make docker-build
           make docker-push
-
-
-      # - name: Build and push
-      #   uses: docker/build-push-action@v5
-      #   env:
-      #     ORG: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     NAME: ${{ github.event.repository.name }}
-      #     VERSION: ${{ steps.get-version.outputs.version }}
-      #   with:
-      #     push: true
-      #     build-args: |
-      #       NAME=${{ env.NAME }}
-      #       VERSION=${{ env.VERSION }}
-      #     tags: ${{ env.ORG }}/${{ env.NAME }}:${{ env.VERSION }}
