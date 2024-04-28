@@ -85,7 +85,10 @@ def run(args: argparse.Namespace):
     if args.prod:
         config.app_config["mode"] = "production"
 
-    cfg = config.app_config
-    bps = blueprints.app_blueprints
+    app = server.ExchangeServer(
+        app_name,
+        config.app_config,
+        blueprints.app_blueprints,
+    )
 
-    server.ExchangeServer(app_name, cfg, bps).listen()
+    app.listen()
