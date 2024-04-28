@@ -132,6 +132,6 @@ jobs:
         with:
           push: true
           build-args:
-            - NAME=${{ env.NAME }}
-            - VERSION=${{ env.VERSION }}
+            NAME: ${{ env.NAME }}
+            VERSION: ${{ env.VERSION }}
           tags: ${{ env.ORG }}/${{ env.NAME }}:${{ env.VERSION }}
