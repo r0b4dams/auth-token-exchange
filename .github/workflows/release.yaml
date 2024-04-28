@@ -34,7 +34,7 @@ jobs:
           path: dist/
 
   release:
-    name: Create GitHub release
+    name: GitHub release
     needs: [build]
     runs-on: ubuntu-latest
 
@@ -75,7 +75,7 @@ jobs:
 
   cheeseshop:
     name: Publish to PyPI
-    needs: [build]
+    needs: [release]
     runs-on: ubuntu-latest
 
     environment:
@@ -97,7 +97,7 @@ jobs:
 
   docker:
     name: Push image to Dockerhub
-    needs: [build]
+    needs: [release]
     runs-on: ubuntu-latest
 
     steps:
