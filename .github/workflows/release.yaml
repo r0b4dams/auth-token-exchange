@@ -111,7 +111,9 @@ jobs:
           path: dist/
 
       - name: debug
-        run: ls -a
+        run: |
+          ls -a
+          cd dist && ls -a
 
       # - name: Set up QEMU
       #   uses: docker/setup-qemu-action@v3
