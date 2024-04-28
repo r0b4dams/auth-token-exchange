@@ -129,9 +129,9 @@ jobs:
           ORG: ${{ secrets.DOCKERHUB_USERNAME }}
           NAME: ${{ github.event.repository.name }}
           VERSION: ${{ steps.get-version.outputs.version }}
-        build-args:
-          - NAME=${{ env.NAME }}
-          - VERSION=${{ env.VERSION }}
         with:
           push: true
+          build-args:
+            - NAME=${{ env.NAME }}
+            - VERSION=${{ env.VERSION }}
           tags: ${{ env.ORG }}/${{ env.NAME }}:${{ env.VERSION }}
