@@ -13,7 +13,7 @@ def handle_callback():
     redirect_uri = "".join([req.scheme, "://", req.host, "/auth/callback"])
 
     fusionauth_res = requests.post(
-        url="".join([cfg.FUSIONAUTH_BASE_URL, "/oauth2/token"]),
+        url="".join([cfg.FUSIONAUTH_NET_URL, "/oauth2/token"]),
         headers={
             "Content-Type": "application/x-www-form-urlencoded",
         },

@@ -13,7 +13,7 @@ def handle_user():
         res.status_code = 401
         return res
 
-    url = "".join([cfg.FUSIONAUTH_BASE_URL, "/oauth2/userinfo"])
+    url = "".join([cfg.FUSIONAUTH_NET_URL, "/oauth2/userinfo"])
     res = requests.get(
         url,
         headers={"Authorization": f"Bearer {access_token}"},
