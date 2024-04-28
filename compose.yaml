@@ -12,6 +12,10 @@ services:
       - 9000:9000
     networks:
       - auth_net
+    depends_on:
+      fusionauth:
+        condition: service_healthy
+    restart: unless-stopped
     environment:
       FUSIONAUTH_BASE_URL: http://localhost:9011
       FUSIONAUTH_NET_URL: http://fusionauth:9011
@@ -47,10 +51,14 @@ services:
       SEARCH_SERVERS: http://search:9200
       SEARCH_TYPE: elasticsearch
       FUSIONAUTH_APP_KICKSTART_FILE: ${FUSIONAUTH_APP_KICKSTART_FILE}
+    healthcheck:
+      interval: 10s
+      retries: 80
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:9011/
+    restart: unless-stopped
     volumes:
       - fusionauth_config:/usr/local/fusionauth/config
       - ./kickstart:/usr/local/fusionauth/kickstart
-    restart: unless-stopped
 
   db:
     container_name: postgres
