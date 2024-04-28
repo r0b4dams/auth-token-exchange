@@ -1,9 +1,9 @@
-from flask import Blueprint
+import flask
 
 from . import controllers as ctl
 
 
-auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth")
+auth_blueprint = flask.Blueprint("auth", __name__, url_prefix="/auth")
 
 
 @auth_blueprint.route("/callback", methods=["GET"])
