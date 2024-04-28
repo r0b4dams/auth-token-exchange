@@ -8,10 +8,9 @@ export const AccountPage = () => {
   const [balance] = useState(
     USDollars.format(Math.ceil(Math.random() * 100000) / 100)
   );
-
   const navigate = useNavigate();
-
-  const { isLoggedIn, isFetchingUserInfo } = useFusionAuth();
+  const { userInfo, isFetchingUserInfo } = useFusionAuth();
+  const isLoggedIn = !!userInfo;
 
   useEffect(() => {
     if (!isLoggedIn) {

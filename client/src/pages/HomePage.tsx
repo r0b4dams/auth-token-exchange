@@ -6,8 +6,10 @@ import background from "../assets/money.jpg";
 
 export const HomePage = () => {
   const navigate = useNavigate();
-  const { isLoggedIn, isFetchingUserInfo, startLogin, startRegister } =
+  const { userInfo, isFetchingUserInfo, startLogin, startRegister } =
     useFusionAuth();
+    
+  const isLoggedIn = !!userInfo;
 
   useEffect(() => {
     if (isLoggedIn) {

@@ -3,7 +3,8 @@ import { useFusionAuth } from "@fusionauth/react-sdk";
 import changebankLogo from "../assets/changebank.svg";
 
 export const LogoHeader = () => {
-  const { isLoggedIn, userInfo, startLogin, startLogout } = useFusionAuth();
+  const { userInfo, startLogin, startLogout } = useFusionAuth();
+  const isLoggedIn = !!userInfo;
 
   return (
     <div id="logo-header">

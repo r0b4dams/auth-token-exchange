@@ -6,7 +6,8 @@ const imgFallback = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
 export const ProfilePage = () => {
   const navigate = useNavigate();
-  const { isLoggedIn, userInfo } = useFusionAuth();
+  const { userInfo } = useFusionAuth();
+  const isLoggedIn = !!userInfo;
 
   useEffect(() => {
     if (!isLoggedIn) {

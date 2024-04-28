@@ -2,7 +2,8 @@ import { useFusionAuth } from "@fusionauth/react-sdk";
 import { NavLink } from "react-router-dom";
 
 export const MenuBar = () => {
-  const { isLoggedIn } = useFusionAuth();
+  const { userInfo } = useFusionAuth();
+  const isLoggedIn = !!userInfo;
 
   return (
     <div id="menu-bar" className="menu-bar">

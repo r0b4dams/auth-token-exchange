@@ -15,7 +15,8 @@ interface Change {
 
 export const MakeChangePage = () => {
   const navigate = useNavigate();
-  const { isLoggedIn } = useFusionAuth();
+  const { userInfo } = useFusionAuth();
+  const isLoggedIn = !!userInfo;
 
   const [amount, setAmount] = useState(0);
   const [change, setChange] = useState<Change | null>(null);
