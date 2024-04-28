@@ -1,5 +1,5 @@
 
-RG := r0b4dams
+ORG := r0b4dams
 NAME := authexchange
 VERSION := $(shell cd src && python3 -c "import $(NAME); print($(NAME).__version__)")
 IMAGE := $(ORG)/$(NAME):$(VERSION)
@@ -74,10 +74,9 @@ release:
 	@chmod +x scripts/release
 	@scripts/release
 
-docker-build: build
+docker-build: dist
 	@docker build \
-	--build-arg NAME=$(NAME) \
-	--build-arg VERSION=$(VERSION) \
+	--build-arg TARBALL=$(NAME)-$(VERSION).tar.gz \
 	-t $(IMAGE) .
 
 docker-push: docker-build

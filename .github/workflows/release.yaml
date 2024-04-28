@@ -127,19 +127,25 @@ jobs:
           ls -a
           cd dist && ls -a
 
-      - name: Get version
-        id: get-version
-        run: echo "version=$(make version)" >> "$GITHUB_OUTPUT"
+      # - name: Get version
+      #   id: get-version
+      #   run: echo "version=$(make version)" >> "$GITHUB_OUTPUT"
 
       - name: Build and push
-        uses: docker/build-push-action@v5
-        env:
-          ORG: ${{ secrets.DOCKERHUB_USERNAME }}
-          NAME: ${{ github.event.repository.name }}
-          VERSION: ${{ steps.get-version.outputs.version }}
-        with:
-          push: true
-          build-args: |
-            NAME=${{ env.NAME }}
-            VERSION=${{ env.VERSION }}
-          tags: ${{ env.ORG }}/${{ env.NAME }}:${{ env.VERSION }}
+        run: |
+          make version
+          make docker-build
+
+
+      # - name: Build and push
+      #   uses: docker/build-push-action@v5
+      #   env:
+      #     ORG: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     NAME: ${{ github.event.repository.name }}
+      #     VERSION: ${{ steps.get-version.outputs.version }}
+      #   with:
+      #     push: true
+      #     build-args: |
+      #       NAME=${{ env.NAME }}
+      #       VERSION=${{ env.VERSION }}
+      #     tags: ${{ env.ORG }}/${{ env.NAME }}:${{ env.VERSION }}
