@@ -135,6 +135,7 @@ jobs:
         run: |
           make version
           make docker-build
+          make docker-push
 
 
       # - name: Build and push
