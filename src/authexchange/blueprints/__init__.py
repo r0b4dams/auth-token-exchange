@@ -1,3 +1,6 @@
-from . import auth
+from . import auth, ping
 
-app_blueprints = [auth.auth_blueprint]
+app_blueprints = [
+    auth.auth_blueprint,
+    ping.ping_blueprint,
+]
