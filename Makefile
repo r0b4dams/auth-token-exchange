@@ -1,8 +1,8 @@
-
 ORG := r0b4dams
 NAME := authexchange
 VERSION := $(shell cd src && python3 -c "import $(NAME); print($(NAME).__version__)")
 IMAGE := $(ORG)/$(NAME):$(VERSION)
+TARBALL := $(NAME)-$(VERSION).tar.gz
 
 VENV := .venv
 PY := $(VENV)/bin/python3
@@ -76,7 +76,7 @@ release:
 
 docker-build: dist
 	@docker build \
-	--build-arg TARBALL=$(NAME)-$(VERSION).tar.gz \
+	--build-arg TARBALL=$(TARBALL) \
 	-t $(IMAGE) .
 
 docker-push:
@@ -86,7 +86,7 @@ docker-run:
 	docker run -p 9000:9000 $(IMAGE)
 
 docker-up:
-	@IMAGE=$(IMAGE) docker compose $(COMPOSE_ENV) up
+	@TARBALL=$(TARBALL) docker compose $(COMPOSE_ENV) up
 
 docker-down:
 	@docker compose $(COMPOSE_ENV) down
