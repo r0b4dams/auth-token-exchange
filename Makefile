@@ -1,19 +1,20 @@
-.PHONY: all venv build dev clean client
 
-ORG := r0b4dams
-APP_NAME := authexchange
-VERSION := $(shell cd src && python3 -c "import $(APP_NAME); print($(APP_NAME).__version__)")
+RG := r0b4dams
+NAME := authexchange
+VERSION := $(shell cd src && python3 -c "import $(NAME); print($(NAME).__version__)")
+IMAGE := $(ORG)/$(NAME):$(VERSION)
+
 VENV := .venv
 PY := $(VENV)/bin/python3
 PIP := $(PY) -m pip
 COMPOSE_ENV := --env-file compose.env
-IMAGE := $(ORG)/$(APP_NAME):$(VERSION)
 
 DEV_FUSIONAUTH_CLIENT_ID := 6e4e9805-9690-476f-a7d8-2552992c41e1
 DEV_FUSIONAUTH_CLIENT_SECRET := ZyYv1MrS4XjCZKMu0YShVXsGbXoHw57pkXNBcSukY48
 
+.PHONY: all version venv install install-dev uninstall dev wsgi clean
 all:
-	@echo "$(APP_NAME) $(VERSION)"
+	@echo "$(NAME) $(VERSION)"
 	@$(MAKE) venv
 
 version:
@@ -22,30 +23,24 @@ version:
 venv: clean
 	@python3 -m venv $(VENV)
 	@$(PIP) install --upgrade pip
-	@$(PIP) install --upgrade build black mypy pylint pytest
-	@chmod +x $(VENV)/bin/activate
 
-install: .venv
-	@$(PIP) install -e .
+install: venv
+	@$(PIP) install -e '.[dev]'
 
-dev: install
+uninstall:
+	@$(PIP) uninstall $(NAME) -y
+
+dev: .venv
 	@ \
 	FUSIONAUTH_CLIENT_ID=$(DEV_FUSIONAUTH_CLIENT_ID) \
 	FUSIONAUTH_CLIENT_SECRET=$(DEV_FUSIONAUTH_CLIENT_SECRET) \
 	authexchange run --dev
 
-wsgi: install
+wsgi: .venv
 	@ \
 	FUSIONAUTH_CLIENT_ID=$(DEV_FUSIONAUTH_CLIENT_ID) \
 	FUSIONAUTH_CLIENT_SECRET=$(DEV_FUSIONAUTH_CLIENT_SECRET) \
 	authexchange run --prod
-
-build: clean venv
-	@$(PIP) install --upgrade build
-	@$(PY) -m build
-
-uninstall:
-	@$(PIP) uninstall $(APP_NAME) -y
 
 clean:
 	@find . \
@@ -57,6 +52,7 @@ clean:
 	-o -name "*.egg-info" \
 	\) -exec rm -rf {} +
 
+.PHONY: test lint format typecheck build release
 test: .venv
 	@$(PY) -m pytest tests
 
@@ -70,12 +66,17 @@ typecheck: .venv
 	@$(PY) -m mypy --install-types --non-interactive src
 	@$(PY) -m mypy src
 
-client:
-	@cd client && yarn && yarn dev
+build: venv
+	@$(PIP) install --upgrade build
+	@$(PY) -m build
+
+release:
+	@chmod +x scripts/release
+	@scripts/release
 
 docker-build: build
 	@docker build \
-	--build-arg NAME=$(APP_NAME) \
+	--build-arg NAME=$(NAME) \
 	--build-arg VERSION=$(VERSION) \
 	-t $(IMAGE) .
 
@@ -93,7 +94,3 @@ docker-down:
 
 docker-reset:
 	@docker compose $(COMPOSE_ENV) down -v
-
-release:
-	@chmod +x scripts/release
-	@scripts/release
