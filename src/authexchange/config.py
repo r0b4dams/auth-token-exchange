@@ -1,17 +1,9 @@
 import os
 
-FUSIONAUTH_BASE_URL = os.environ.get(
-    "FUSIONAUTH_BASE_URL",
-    "http://localhost:9011",
-)
-FUSIONAUTH_CLIENT_ID = os.environ.get(
-    "FUSIONAUTH_CLIENT_ID",
-    "6e4e9805-9690-476f-a7d8-2552992c41e1",
-)
-FUSIONAUTH_CLIENT_SECRET = os.environ.get(
-    "FUSIONAUTH_CLIENT_SECRET",
-    "ZyYv1MrS4XjCZKMu0YShVXsGbXoHw57pkXNBcSukY48",
-)
+FUSIONAUTH_BASE_URL = os.environ.get("FUSIONAUTH_BASE_URL", "http://localhost:9011")
+FUSIONAUTH_NET_URL = os.environ.get("FUSIONAUTH_NET_URL", FUSIONAUTH_BASE_URL)
+FUSIONAUTH_CLIENT_ID = os.environ.get("FUSIONAUTH_CLIENT_ID", None)
+FUSIONAUTH_CLIENT_SECRET = os.environ.get("FUSIONAUTH_CLIENT_SECRET", None)
 
 mode = os.environ.get("MODE", "development")
 host = os.environ.get("HOST", "localhost")
