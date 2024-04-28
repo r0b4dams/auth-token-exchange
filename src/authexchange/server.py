@@ -5,7 +5,7 @@ import gunicorn.app.base
 
 class ExchangeServer(gunicorn.app.base.BaseApplication):
     """
-    Texserv is the top-level class managing the application
+    ExchangeServer is the top-level class managing the application.
 
     Args:
         name:       Name of the application
@@ -26,6 +26,12 @@ class ExchangeServer(gunicorn.app.base.BaseApplication):
         super().__init__()
 
     def listen(self):
+        """
+        Start the server and run forever.
+
+        In production, runs the app via Gunicorn.
+        Otherwise, starts the Flask dev server
+        """
         if self._config["mode"] == "production":
             self.run()
         else:
@@ -36,9 +42,19 @@ class ExchangeServer(gunicorn.app.base.BaseApplication):
             )
 
     def load(self):
+        """
+        Returns Flask instance for Gunicorn
+
+        Required override
+        """
         return self._app
 
     def load_config(self):
+        """
+        Passes valid config values to Gunicorn BaseApplication.
+
+        Required override
+        """
         gunicorn_config = {
             key.lower(): value
             for key, value in self._config.items()
@@ -49,6 +65,12 @@ class ExchangeServer(gunicorn.app.base.BaseApplication):
             self.cfg.set(key, value)
 
     def register_blueprints(self, blueprints: list[flask.Blueprint]):
+        """
+        Pass blueprints to Flask application instance.
+
+        Args:
+            blueprints: A list of Flask Blueprint instances.
+        """
         if blueprints is not None:
             for blueprint in blueprints:
                 self._app.register_blueprint(blueprint)
