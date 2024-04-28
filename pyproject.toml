@@ -3,11 +3,11 @@ authors = [
   {name = "Robert Adams", email = "r0b4dams@gmail.com"},
 ]
 dependencies = [
-  "flask",
-  "flask-cors",
-  "gunicorn",
-  "pkce",
-  "requests",
+  "Flask == 3.0.3",
+  "Flask-Cors == 4.0.0",
+  "gunicorn == 22.0.0",
+  "pkce == 1.0.3",
+  "requests == 2.31.0",
 ]
 dynamic = ["version", "description"]
 license = {file = "LICENSE"}
