@@ -1,5 +1,5 @@
-from time import time
-from urllib.parse import urlencode
+import time
+import urllib.parse
 
 import flask
 import requests
@@ -17,7 +17,7 @@ def handle_callback():
         headers={
             "Content-Type": "application/x-www-form-urlencoded",
         },
-        data=urlencode(
+        data=urllib.parse.urlencode(
             {
                 "grant_type": "authorization_code",
                 "code": req.args.get("code"),
@@ -48,7 +48,7 @@ def handle_callback():
     res = flask.redirect(redirect_url)
 
     # set token expiration in a readable cookie
-    time_ms = int(time() * 1000)
+    time_ms = int(time.time() * 1000)
     expires_in_ms = int(expires_in * 1000)
     res.set_cookie(
         "app.at_exp",

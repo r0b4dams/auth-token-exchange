@@ -1,4 +1,4 @@
-from urllib.parse import urlencode
+import urllib.parse
 
 import flask
 
@@ -14,7 +14,7 @@ COOKIE_KEYS = [
 
 def handle_logout():
     req = flask.request
-    query = urlencode(
+    query = urllib.parse.urlencode(
         {
             "post_logout_redirect_uri": req.args.get(
                 "post_logout_redirect_uri",

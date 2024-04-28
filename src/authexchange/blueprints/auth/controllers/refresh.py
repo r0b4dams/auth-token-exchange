@@ -1,5 +1,5 @@
-from urllib.parse import urlencode
-from time import time
+import time
+import urllib.parse
 
 import flask
 import requests
@@ -23,7 +23,7 @@ def handle_refresh():
         headers={
             "Content-Type": "application/x-www-form-urlencoded",
         },
-        data=urlencode(
+        data=urllib.parse.urlencode(
             {
                 "grant_type": "refresh_token",
                 "refresh_token": req.cookies.get("app.rt"),
@@ -52,7 +52,7 @@ def handle_refresh():
     res.status_code = 204
 
     # set token expiration in a readable cookie
-    time_ms = int(time() * 1000)
+    time_ms = int(time.time() * 1000)
     expires_in_ms = int(expires_in * 1000)
     res.set_cookie(
         "app.at_exp",

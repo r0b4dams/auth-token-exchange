@@ -1,4 +1,4 @@
-from urllib.parse import urlencode
+import urllib.parse
 
 import flask
 import pkce
@@ -40,7 +40,7 @@ def handle_signup_login(authtype: str):
             "/auth/callback",
         ]
     )
-    query = urlencode(
+    query = urllib.parse.urlencode(
         {
             "response_type": "code",
             "scope": "openid offline_access",
