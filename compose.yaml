@@ -2,6 +2,19 @@ version: '3'
 name: "auth_services"
 
 services:
+  authexchange:
+    container_name: authexchange
+    image: ${IMAGE}
+    ports:
+      - 9000:9000
+    networks:
+      - auth_net
+    environment:
+      FUSIONAUTH_BASE_URL: http://localhost:9011
+      FUSIONAUTH_NET_URL: http://fusionauth:9011
+      FUSIONAUTH_CLIENT_ID: 6e4e9805-9690-476f-a7d8-2552992c41e1
+      FUSIONAUTH_CLIENT_SECRET: ZyYv1MrS4XjCZKMu0YShVXsGbXoHw57pkXNBcSukY48
+
   fusionauth:
     container_name: fusionauth
     image: fusionauth/fusionauth-app:1.49.2
@@ -12,6 +25,13 @@ services:
         condition: service_healthy
       smtp:
         condition: service_healthy
+    ports:
+      - 9011:9011
+    networks:
+      - auth_net
+      - db_net
+      - search_net
+      - mailcatcher_net
     environment:
       DATABASE_URL: jdbc:postgresql://db:5432/fusionauth
       DATABASE_ROOT_USERNAME: ${POSTGRES_USER}
@@ -24,16 +44,10 @@ services:
       SEARCH_SERVERS: http://search:9200
       SEARCH_TYPE: elasticsearch
       FUSIONAUTH_APP_KICKSTART_FILE: ${FUSIONAUTH_APP_KICKSTART_FILE}
-    networks:
-      - db_net
-      - search_net
-      - mailcatcher_net
-    restart: unless-stopped
-    ports:
-      - 9011:9011
     volumes:
       - fusionauth_config:/usr/local/fusionauth/config
       - ./kickstart:/usr/local/fusionauth/kickstart
+    restart: unless-stopped
 
   db:
     container_name: postgres
@@ -97,6 +111,8 @@ services:
       - mailcatcher_net
 
 networks:
+  auth_net:
+    driver: bridge
   db_net:
     driver: bridge
   search_net:
