@@ -49,7 +49,7 @@ jobs:
           name: python-package-distributions
           path: dist/
 
-      - name: Sign the dists with Sigstore
+      - name: Sign build artifacts with Sigstore
         uses: sigstore/gh-action-sigstore-python@v1.2.3
         with:
           inputs: >-
@@ -74,7 +74,7 @@ jobs:
           --repo '${{ github.repository }}'
 
   cheeseshop:
-    name: Publish to PyPI
+    name: Publish package to PyPI
     needs: [release]
     runs-on: ubuntu-latest
 
@@ -104,7 +104,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          sparse-checkout: | # src needed for version
+          sparse-checkout: |
             src
 
       - name: Download
