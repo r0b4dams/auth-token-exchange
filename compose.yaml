@@ -4,7 +4,10 @@ name: "auth_services"
 services:
   authexchange:
     container_name: authexchange
-    image: ${IMAGE}
+    build:
+      context: .
+      args:
+        TARBALL: ${TARBALL}
     ports:
       - 9000:9000
     networks:
