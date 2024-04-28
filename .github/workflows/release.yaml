@@ -75,7 +75,7 @@ jobs:
 
   cheeseshop:
     name: Publish to PyPI
-    needs: [release]
+    needs: [build]
     runs-on: ubuntu-latest
 
     environment:
@@ -94,3 +94,28 @@ jobs:
 
       - name: Publish
         uses: pypa/gh-action-pypi-publish@release/v1
+
+  docker:
+    name: Push image to Dockerhub
+    needs: [build]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+      - name: Get version
+        id: get-version
+        run: echo "version=$(make version)" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        env:
+          REPO: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
+          VERSION: ${{ steps.get-version.outputs.version }}
+        with:
+          push: true
+          tags: ${{ env.REPO }}:${{ env.VERSION }}
