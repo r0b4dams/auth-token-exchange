@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# pylint: disable=invalid-name
 
 import argparse
 
@@ -49,7 +48,7 @@ def cli():
     run_cmd = subparsers.add_parser(
         "run",
         description="start the server and run forever",
-        help="runs the server",
+        help="Runs the server",
     )
     run_group = run_cmd.add_mutually_exclusive_group(
         required=True,
